@@ -49,11 +49,12 @@ func main() {
                 running = false
                 break
             case *sdl.KeyboardEvent:
-                if sdl.GetKeyName(et.Keysym.Sym) == "Left" {
+                if et.Keysym.Sym == sdl.K_LEFT {
                     rect.X += -20
-                } else {
+                } else if et.Keysym.Sym == sdl.K_RIGHT{
                     rect.X += 20
                 }
+                
                 surface.FillRect(nil, 250)
                 surface.FillRect(&rect, pixel)
                 window.UpdateSurface()
