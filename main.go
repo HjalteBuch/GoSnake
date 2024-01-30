@@ -7,31 +7,23 @@ import (
 const w = 640
 const h = 480
 
+var window *sdl.Window
+var surface *sdl.Surface
+
+
 func main() {
-    println("Initializing SDL")
-    if err := sdl.Init(sdl.INIT_EVERYTHING); err != nil {
-        panic(err)
+    if sdlInit() {
+        println("Something went wrong when initalizing sdl")
+        closeSdl()
+        return
     }
-    defer sdl.Quit()
 
-    println("Initializing window")
-    window, err := sdl.CreateWindow("SDL Window", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, w, h, sdl.WINDOW_SHOWN)
-    if err != nil {
-        panic(err)
-    }
-    defer window.Destroy()
-
-    println("Getting surface")
-    surface, err := window.GetSurface()
-    if err != nil {
-        panic(err)
-    }
     println("Creating background on surface")
     surface.FillRect(nil, 250)
 
     println("Creating object")
     rect := sdl.Rect{w/2-20, h/2-20, 40, 40}
-    colour := sdl.Color{R: 255, G: 0, B: 255, A: 255} // purple
+    colour := sdl.Color{R: 255, G: 0, B: 255, A: 255} // purple pixel := sdl.MapRGBA(surface.Format, colour.R, colour.G, colour.B, colour.A)
     pixel := sdl.MapRGBA(surface.Format, colour.R, colour.G, colour.B, colour.A)
     println("Adding object to surface")
     surface.FillRect(&rect, pixel)
@@ -45,7 +37,7 @@ func main() {
         for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
             switch et := event.(type) {
             case *sdl.QuitEvent:
-                println("Quit")
+                println("Quit event")
                 running = false
                 break
             case *sdl.KeyboardEvent:
@@ -61,4 +53,38 @@ func main() {
             }
         }
     }
+
+    closeSdl()
+}
+
+func sdlInit() bool {
+    success := true
+    println("Initializing SDL...")
+    err := sdl.Init(sdl.INIT_EVERYTHING)
+    if err != nil {
+        println(err)
+        success = false
+    }
+
+    println("Initializing window...")
+    window, err = sdl.CreateWindow("SDL Window", sdl.WINDOWPOS_UNDEFINED, sdl.WINDOWPOS_UNDEFINED, w, h, sdl.WINDOW_SHOWN)
+    if err != nil {
+        println(err)
+        success = false
+    }
+
+    println("Initializing surface...")
+    surface, err = window.GetSurface()
+    if err != nil {
+        println(err)
+        success = false
+    }
+
+    return success
+}
+
+func closeSdl() {
+    println("Disposing off sdl...")
+    window.Destroy()
+    sdl.Quit()
 }
