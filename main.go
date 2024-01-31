@@ -45,7 +45,7 @@ func main() {
 
     snake = Snake{[]sdl.Rect{head}, 0}
 	
-    drawSnake()
+    snake.draw()
 
     println("Initial updating of surface")
     window.UpdateSurface()
@@ -59,11 +59,11 @@ func main() {
                 running = false
                 break
             case *sdl.KeyboardEvent:
-                changeSnakeDirection(et.Keysym.Sym)
+                snake.changeDirection(et.Keysym.Sym)
             }
         }
-        moveSnake()
-        drawSnake()
+        snake.move()
+        snake.draw()
         window.UpdateSurface()
         time.Sleep(time.Second/2)
     }
@@ -71,36 +71,37 @@ func main() {
     closeSdl()
 }
 
-func moveSnake() {
-    switch snake.Direction {
+func (s *Snake) move() {
+    switch s.Direction {
     case RIGHT:
-        snake.Body[0].X += velocity
+        s.Body[0].X += velocity
     case LEFT:
-        snake.Body[0].X -= velocity
+        s.Body[0].X -= velocity
     case DOWN:
-        snake.Body[0].Y += velocity
+        s.Body[0].Y += velocity
     case UP:
-        snake.Body[0].Y -= velocity
+        s.Body[0].Y -= velocity
     }
 }
 
-func changeSnakeDirection(key sdl.Keycode) {
+func (s *Snake) changeDirection(key sdl.Keycode) {
     switch key {
     case sdl.K_LEFT:
-        snake.Direction = LEFT
+        s.Direction = LEFT
     case sdl.K_RIGHT:
-        snake.Direction = RIGHT
+        s.Direction = RIGHT
     case sdl.K_UP:
-        snake.Direction = UP
+        s.Direction = UP
     case sdl.K_DOWN:
-        snake.Direction = DOWN
+        s.Direction = DOWN
     }
 }
 
-func drawSnake() {
+func (s *Snake) draw() {
     surface.FillRect(nil, 0)
-    for i := 0; i < len(snake.Body); i++ {
-        surface.FillRect(&snake.Body[i], pixel)
+    for _, body := range(s.Body) {
+        println(s.Direction)
+        surface.FillRect(&body, pixel)
     }
 }
 
