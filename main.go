@@ -1,29 +1,19 @@
 package main
 
 import (
+	"Snake/snake"
 	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-type Snake struct {
-    Body []sdl.Rect
-    Direction int
-}
 
-const (
-    RIGHT = iota
-    LEFT
-    UP
-    DOWN
-)
 const velocity = 20
 const w = 640
 const h = 480
 
 var window *sdl.Window
 var surface *sdl.Surface
-var snake Snake
 var pixel uint32
 
 func main() {
@@ -43,9 +33,12 @@ func main() {
     pixel = sdl.MapRGBA(surface.Format, colour.R, colour.G, colour.B, colour.A)
     println("Adding object to surface")
 
-    snake = Snake{[]sdl.Rect{head}, 0}
+    snake := snake.Snake{[]sdl.Rect{head}, 0}
 	
-    snake.draw()
+    surface.FillRect(nil, 0)
+    for _, body := range(snake.Body) {
+        surface.FillRect(&body, pixel)
+    }
 
     println("Initial updating of surface")
     window.UpdateSurface()
@@ -59,11 +52,11 @@ func main() {
                 running = false
                 break
             case *sdl.KeyboardEvent:
-                snake.changeDirection(et.Keysym.Sym)
+                snake.ChangeDirection(et.Keysym.Sym)
             }
         }
-        snake.move()
-        snake.draw()
+        snake.Move(velocity)
+        draw(snake)
         window.UpdateSurface()
         time.Sleep(time.Second/2)
     }
@@ -71,36 +64,9 @@ func main() {
     closeSdl()
 }
 
-func (s *Snake) move() {
-    switch s.Direction {
-    case RIGHT:
-        s.Body[0].X += velocity
-    case LEFT:
-        s.Body[0].X -= velocity
-    case DOWN:
-        s.Body[0].Y += velocity
-    case UP:
-        s.Body[0].Y -= velocity
-    }
-}
-
-func (s *Snake) changeDirection(key sdl.Keycode) {
-    switch key {
-    case sdl.K_LEFT:
-        s.Direction = LEFT
-    case sdl.K_RIGHT:
-        s.Direction = RIGHT
-    case sdl.K_UP:
-        s.Direction = UP
-    case sdl.K_DOWN:
-        s.Direction = DOWN
-    }
-}
-
-func (s *Snake) draw() {
+func draw(snake snake.Snake) {
     surface.FillRect(nil, 0)
-    for _, body := range(s.Body) {
-        println(s.Direction)
+    for _, body := range(snake.Body) {
         surface.FillRect(&body, pixel)
     }
 }
