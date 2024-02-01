@@ -2,7 +2,6 @@ package main
 
 import (
 	"Snake/snake"
-	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -58,7 +57,7 @@ func main() {
         snake.Move(velocity)
         draw(snake)
         window.UpdateSurface()
-        time.Sleep(time.Second/2)
+        sdl.Delay(1000 / 5)
     }
 
     closeSdl()
