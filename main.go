@@ -7,7 +7,7 @@ import (
 )
 
 
-const velocity = 20
+const gridSize = 20
 const w = 640
 const h = 480
 
@@ -22,7 +22,7 @@ func main() {
     }
 
     println("Creating snake")
-    snakePart := sdl.Rect{w/2-velocity/2, h/2-velocity/2, velocity, velocity}
+    snakePart := sdl.Rect{w/2, h/2, gridSize, gridSize}
     snake := snake.Snake{[]sdl.Rect{snakePart}, 0}
 
     running := true
@@ -37,7 +37,10 @@ func main() {
                 snake.ChangeDirection(et.Keysym.Sym)
             }
         }
-        snake.Move(velocity)
+        snake.Move(gridSize)
+        if collision(snake) {
+            break
+        }
 
         clearScreen()
 
@@ -50,6 +53,16 @@ func main() {
     }
 
     closeSdl()
+}
+
+func collision(snake snake.Snake) bool {
+    if snake.Body[0].X < 0 || snake.Body[0].X > w || snake.Body[0].Y < 0 || snake.Body[0].Y > h {
+        renderer.SetDrawColor(255, 0, 0, 1)
+        renderer.Clear()
+        renderer.Present()
+        return true
+    }
+    return false
 }
 
 func clearScreen() {
