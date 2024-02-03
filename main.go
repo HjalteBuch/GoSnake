@@ -12,8 +12,7 @@ const w = 640
 const h = 480
 
 var window *sdl.Window
-var surface *sdl.Surface
-var pixel uint32
+var renderer *sdl.Renderer
 
 func main() {
     if !sdlInit() {
@@ -22,25 +21,9 @@ func main() {
         return
     }
 
-    println("Creating background on surface")
-    surface.FillRect(nil, 0)
-
-
-    println("Creating object")
-    head := sdl.Rect{w/2-velocity/2, h/2-velocity/2, velocity, velocity}
-    colour := sdl.Color{R: 200, G: 200, B: 200, A: 200} // purple pixel := sdl.MapRGBA(surface.Format, colour.R, colour.G, colour.B, colour.A)
-    pixel = sdl.MapRGBA(surface.Format, colour.R, colour.G, colour.B, colour.A)
-    println("Adding object to surface")
-
-    snake := snake.Snake{[]sdl.Rect{head}, 0}
-	
-    surface.FillRect(nil, 0)
-    for _, body := range(snake.Body) {
-        surface.FillRect(&body, pixel)
-    }
-
-    println("Initial updating of surface")
-    window.UpdateSurface()
+    println("Creating snake")
+    snakePart := sdl.Rect{w/2-velocity/2, h/2-velocity/2, velocity, velocity}
+    snake := snake.Snake{[]sdl.Rect{snakePart}, 0}
 
     running := true
     for running {
@@ -55,19 +38,23 @@ func main() {
             }
         }
         snake.Move(velocity)
-        draw(snake)
-        window.UpdateSurface()
+
+        clearScreen()
+
+        renderer.SetDrawColor(135, 135, 135, 1)
+        renderer.FillRect(&snake.Body[0])
+
+        renderer.Present()
+
         sdl.Delay(1000 / 5)
     }
 
     closeSdl()
 }
 
-func draw(snake snake.Snake) {
-    surface.FillRect(nil, 0)
-    for _, body := range(snake.Body) {
-        surface.FillRect(&body, pixel)
-    }
+func clearScreen() {
+        renderer.SetDrawColor(0, 0, 0, 1)
+        renderer.Clear()
 }
 
 func sdlInit() bool {
@@ -86,8 +73,8 @@ func sdlInit() bool {
         success = false
     }
 
-    println("Initializing surface...")
-    surface, err = window.GetSurface()
+    println("Initializing renderer...")
+    renderer, err = sdl.CreateRenderer(window, -1, sdl.RENDERER_ACCELERATED)
     if err != nil {
         println(err)
         success = false
@@ -99,5 +86,6 @@ func sdlInit() bool {
 func closeSdl() {
     println("Disposing off sdl...")
     window.Destroy()
+    renderer.Destroy()
     sdl.Quit()
 }
