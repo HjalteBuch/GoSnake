@@ -23,6 +23,11 @@ func main() {
 
     println("Creating snake")
     snake := snake.NewSnake(sdl.Point{w/2, h/2}, gridSize)
+    snake.AddPart(gridSize)
+    snake.AddPart(gridSize)
+    snake.AddPart(gridSize)
+    snake.AddPart(gridSize)
+    snake.AddPart(gridSize)
 
     running := true
     for running {
@@ -44,7 +49,9 @@ func main() {
         clearScreen()
 
         renderer.SetDrawColor(135, 135, 135, 1)
-        renderer.FillRect(&snake.Body[0])
+        for i := 0; i < len(snake.Body); i++ {
+            renderer.FillRect(&snake.Body[i])
+        }
 
         renderer.Present()
 

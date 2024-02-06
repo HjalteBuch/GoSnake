@@ -26,14 +26,17 @@ func NewSnake(startingPoint sdl.Point, size int32) Snake{
     return Snake{[]sdl.Rect{head}, []int{0}}
 }
 
-func (s *Snake) AddPart(startingPoint sdl.Point, size int32) {
+func (s *Snake) AddPart(size int32) {
+    x := s.Body[len(s.Body)-1].X
+    y := s.Body[len(s.Body)-1].Y
     part := sdl.Rect{
-        X: startingPoint.X,
-        Y: startingPoint.Y,
+        X: x-size,
+        Y: y,
         W: size,
         H: size,
     }
     s.Body = append(s.Body, part)
+    s.Direction = append(s.Direction, s.Direction[len(s.Body)-2])
 }
 
 func (s *Snake) Move(velocity int32) {
@@ -48,7 +51,13 @@ func (s *Snake) Move(velocity int32) {
         case UP:
             s.Body[i].Y -= velocity
         }
-        println(s.Body[i].X)
+    }
+    var temp []int
+    for i := 0; i < len(s.Direction); i++ {
+        temp = append(temp, s.Direction[i])
+    }
+    for i := 1; i < len(s.Direction); i++ {
+        s.Direction[i] = temp[i-1]
     }
 }
 
