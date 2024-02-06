@@ -22,8 +22,7 @@ func main() {
     }
 
     println("Creating snake")
-    snakePart := sdl.Rect{w/2, h/2, gridSize, gridSize}
-    snake := snake.Snake{[]sdl.Rect{snakePart}, 0}
+    snake := snake.NewSnake(sdl.Point{w/2, h/2}, gridSize)
 
     running := true
     for running {
