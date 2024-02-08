@@ -2,10 +2,10 @@ package main
 
 import (
 	"Snake/snake"
+    "math/rand"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
-
 
 const gridSize = 20
 const w = 640
@@ -28,6 +28,9 @@ func main() {
     snake.AddPart(gridSize)
     snake.AddPart(gridSize)
     snake.AddPart(gridSize)
+
+    println("Creating food")
+    food := spawnFood()
 
     running := true
     for running {
@@ -53,6 +56,8 @@ func main() {
         for i := 0; i < len(snake.Body); i++ {
             renderer.FillRect(&snake.Body[i])
         }
+        renderer.SetDrawColor(200, 30, 80, 1)
+        renderer.FillRect(&food)
 
         renderer.Present()
 
@@ -60,6 +65,18 @@ func main() {
     }
 
     closeSdl()
+}
+
+func spawnFood() sdl.Rect{
+    x := rand.Int31n(w/20) * 20
+    y := rand.Int31n(h/20) * 20
+    food := sdl.Rect{
+        X: x+2,
+        Y: y+2,
+        W: gridSize-4,
+        H: gridSize-4,
+    }
+    return food
 }
 
 func collision(snake snake.Snake) bool {
