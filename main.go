@@ -43,6 +43,7 @@ func main() {
         }
         snake.Move(gridSize)
         if collision(snake) {
+            death()
             break
         }
 
@@ -63,12 +64,19 @@ func main() {
 
 func collision(snake snake.Snake) bool {
     if snake.Body[0].X < 0 || snake.Body[0].X > w || snake.Body[0].Y < 0 || snake.Body[0].Y > h {
-        renderer.SetDrawColor(255, 0, 0, 1)
-        renderer.Clear()
-        renderer.Present()
+        return true
+    }
+    if snake.Collision() {
         return true
     }
     return false
+}
+
+func death(){
+    println("Death")
+    renderer.SetDrawColor(255, 0, 0, 1)
+    renderer.Clear()
+    renderer.Present()
 }
 
 func clearScreen() {

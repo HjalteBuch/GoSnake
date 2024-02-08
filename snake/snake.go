@@ -39,6 +39,16 @@ func (s *Snake) AddPart(size int32) {
     s.Direction = append(s.Direction, s.Direction[len(s.Body)-2])
 }
 
+func (s *Snake) Collision() bool {
+    head := s.Body[0]
+    for i := 1; i < len(s.Body); i++ {
+        if head.HasIntersection(&s.Body[i]) {
+            return true
+        }
+    }
+    return false
+}
+
 func (s *Snake) Move(velocity int32) {
     for i := 0; i < len(s.Body); i++ {
         switch s.Direction[i] {
