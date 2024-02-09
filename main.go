@@ -23,11 +23,9 @@ func main() {
 
     println("Creating snake")
     snake := snake.NewSnake(sdl.Point{w/2, h/2}, gridSize)
-    snake.AddPart(gridSize)
-    snake.AddPart(gridSize)
-    snake.AddPart(gridSize)
-    snake.AddPart(gridSize)
-    snake.AddPart(gridSize)
+    for i := 0; i < 50; i++ {
+        snake.AddPart(gridSize)
+    }
 
     println("Creating food")
     food := spawnFood()
