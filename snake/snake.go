@@ -35,14 +35,24 @@ func NewSnake(startingPoint sdl.Point, size int32) Snake{
 func (s *Snake) AddPart(size int32) {
     x := s.Body[len(s.Body)-1].X
     y := s.Body[len(s.Body)-1].Y
+    switch s.Direction[len(s.Direction)-1] {
+    case RIGHT:
+        x -= size
+    case LEFT:
+        x += size
+    case DOWN:
+        y -= size
+    case UP:
+        y += size
+    }
     part := sdl.Rect{
-        X: x-size,
+        X: x,
         Y: y,
         W: size-4,
         H: size-4,
     }
     s.Body = append(s.Body, part)
-    s.Direction = append(s.Direction, s.Direction[len(s.Body)-2])
+    s.Direction = append(s.Direction, s.Direction[len(s.Direction)-1])
 }
 
 func (s *Snake) Collision() bool {

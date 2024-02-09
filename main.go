@@ -34,6 +34,10 @@ func main() {
 
     running := true
     for running {
+        if snake.Body[0].HasIntersection(&food) {
+            snake.AddPart(gridSize)
+            food = spawnFood()
+        }
         for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
             switch et := event.(type) {
             case *sdl.QuitEvent:
