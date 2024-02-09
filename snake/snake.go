@@ -90,12 +90,20 @@ func (s *Snake) Move(velocity int32) {
 func (s *Snake) ChangeDirection(key sdl.Keycode) {
     switch key {
     case sdl.K_LEFT:
-        s.Direction[0] = LEFT
+        if s.Direction[1] != RIGHT {
+            s.Direction[0] = LEFT
+        }
     case sdl.K_RIGHT:
-        s.Direction[0] = RIGHT
+        if s.Direction[1] != LEFT {
+            s.Direction[0] = RIGHT
+        }
     case sdl.K_UP:
-        s.Direction[0] = UP
+        if s.Direction[1] != DOWN {
+            s.Direction[0] = UP
+        }
     case sdl.K_DOWN:
-        s.Direction[0] = DOWN
+        if s.Direction[1] != UP {
+            s.Direction[0] = DOWN
+        }
     }
 }
