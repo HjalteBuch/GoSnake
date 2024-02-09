@@ -23,18 +23,18 @@ func main() {
 
     println("Creating snake")
     snake := snake.NewSnake(sdl.Point{w/2, h/2}, gridSize)
-    for i := 0; i < 50; i++ {
+    for i := 0; i < 500; i++ {
         snake.AddPart(gridSize)
     }
 
     println("Creating food")
-    food := spawnFood()
+    food := spawnFood(snake)
 
     running := true
     for running {
         if snake.Body[0].HasIntersection(&food) {
             snake.AddPart(gridSize)
-            food = spawnFood()
+            food = spawnFood(snake)
         }
         for event := sdl.PollEvent(); event != nil; event = sdl.PollEvent() {
             switch et := event.(type) {
@@ -69,14 +69,35 @@ func main() {
     closeSdl()
 }
 
-func spawnFood() sdl.Rect{
+func spawnFood(snake snake.Snake) sdl.Rect{
     x := rand.Int31n(w/20) * 20
     y := rand.Int31n(h/20) * 20
+
     food := sdl.Rect{
         X: x+2,
         Y: y+2,
         W: gridSize-4,
         H: gridSize-4,
+    }
+    for true {
+        hasIntersection := false
+        for _, body := range snake.Body {
+            if food.HasIntersection(&body) {
+                println("Cant spawn here")
+                hasIntersection = true
+                break
+            }
+        }
+        if !hasIntersection {
+            return food
+        }
+
+        food = sdl.Rect{
+            X: rand.Int31n(w/20) * 20+2,
+            Y: rand.Int31n(h/20) * 20+2,
+            W: gridSize-4,
+            H: gridSize-4,
+        }
     }
     return food
 }
